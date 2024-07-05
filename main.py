@@ -1,17 +1,21 @@
 import random
 
+EMPTY_CELL = "."
+FLOWER = "F"
+WEED = "W"
+
 
 def create_garden(row, col):
     """Return a Grid for the Garden with n by m squares and 4 flowers and 3 weedss ."""
 
-    garden = [["." for _ in range(col)] for _ in range(row)]
+    garden = [[ EMPTY_CELL for _ in range(col)] for _ in range(row)]
 
     for _ in range(4):
         while True:
             coordi_flower_x = random.randint(0, row - 1)
             coordi_flower_y = random.randint(0, col - 1)
-            if garden[coordi_flower_x][coordi_flower_y] == ".":
-                garden[coordi_flower_x][coordi_flower_y] = "F"
+            if garden[coordi_flower_x][coordi_flower_y] == EMPTY_CELL:
+                garden[coordi_flower_x][coordi_flower_y] = FLOWER
                 break
 
     # Generate random integers 3 times for placement of the minimum 3 weeds
@@ -19,8 +23,8 @@ def create_garden(row, col):
         while True:
             coordi_weed_x = random.randint(0, row - 1)
             coordi_weed_y = random.randint(0, col - 1)
-            if garden[coordi_weed_x][coordi_weed_y] == ".":
-                garden[coordi_weed_x][coordi_weed_y] = "W"
+            if garden[coordi_weed_x][coordi_weed_y] == EMPTY_CELL:
+                garden[coordi_weed_x][coordi_weed_y] = WEED
                 break
 
     # Loop for 1/10 chance of every square being either a flower or Weed
@@ -30,9 +34,9 @@ def create_garden(row, col):
             if roulette == 1:
                 random_fifty = random.randint(1, 2)
                 if random_fifty == 1:
-                    garden[r][c] = "F"
+                    garden[r][c] = FLOWER
                 elif random_fifty == 2:
-                    garden[r][c] = "W"
+                    garden[r][c] = WEED
 
     return garden
 
@@ -47,48 +51,19 @@ def display_garden(garden, horizontal, vertical):
             print(garden[r][c], end="")
         print("")
 
+def plant_spread(garden , spread_list , item):
+    # try:
+    #     if garden[coordi_spread_x ][coordi_spread_x] == EMPTY_CELL:
+    #        garden[coordi_spread_x][coordi_spread_y] = item
+    # except IndexError :
+    #     pass 
+    # return garden
 
-# functions for spreadment if the square is empty
+    for x, y in spread_list:
+        if 0 <= x < len(garden) and 0 <= y < len(garden[0]):
+            if garden[x][y] == EMPTY_CELL:
+                garden[x][y] = item
 
-
-def spread_up(garden, coordi_spread_x, coordi_spread_y, item):
-    """Return a version of the garden where each flower and weed moves 1 square up"""
-    try:
-        if garden[coordi_spread_x - 1][coordi_spread_y] == ".":
-            garden[coordi_spread_x - 1][coordi_spread_y] = item
-    except IndexError:
-        pass  # If IndexError occurs, do nothing (implicitly return garden)
-    return garden
-
-
-def spread_right(garden, coordi_spread_x, coordi_spread_y, item):
-    """Return a version of the garden where each flower and weed moves 1 square right"""
-    try:
-        if garden[coordi_spread_x][coordi_spread_y + 1] == ".":
-            garden[coordi_spread_x][coordi_spread_y + 1] = item
-    except IndexError:
-        pass  # If IndexError occurs, do nothing (implicitly return garden)
-    return garden
-
-
-def spread_left(garden, coordi_spread_x, coordi_spread_y, item):
-    """Return a version of the garden where each flower and weed moves 1 square left"""
-    try:
-        if garden[coordi_spread_x][coordi_spread_y - 1] == ".":
-            garden[coordi_spread_x][coordi_spread_y - 1] = item
-    except IndexError:
-        pass  # If IndexError occurs, do nothing (implicitly return garden)
-    return garden
-
-
-def spread_down(garden, coordi_spread_x, coordi_spread_y, item):
-    """Return a version of the garden where each flower and weed moves 1 square down"""
-    try:
-        if garden[coordi_spread_x + 1][coordi_spread_y] == ".":
-            garden[coordi_spread_x + 1][coordi_spread_y] = item
-    except IndexError:
-        pass  # If IndexError occurs, do nothing (implicitly return garden)
-    return garden
 
 
 # counts the total number of flowers and weeds
@@ -98,9 +73,9 @@ def counting_items(garden, horizontal, vertical):
     weed_count = 0
     for rows in range(horizontal):
         for column in range(vertical):
-            if garden[rows][column] == "F":
+            if garden[rows][column] == FLOWER:
                 flower_count += 1
-            elif garden[rows][column] == "W":
+            elif garden[rows][column] == WEED:
                 weed_count += 1
     return flower_count, weed_count
 
@@ -110,21 +85,42 @@ def counting_items(garden, horizontal, vertical):
 
 def day_increment(garden, horizontal, vertical):
     """Returns a version of the garden where a day has passed"""
+    # for row in range(horizontal):
+    #     for col in range(vertical):
+    #         if garden[row][col] == FLOWER:
+    #             item = FLOWER
+    #             garden = plant_spread(garden, row -1, col, item)
+    #             garden = plant_spread(garden, row +1, col, item)
+    #             garden = plant_spread(garden, row, col -1, item)
+    #             garden = plant_spread(garden, row, col + 1, item)
+    #         elif garden[row][col] == WEED:
+    #             item = WEED
+    #             garden = plant_spread(garden, row - 1, col, item)
+    #             garden = plant_spread(garden, row + 1, col, item)
+    #             garden = plant_spread(garden, row, col - 1, item)
+    #             garden = plant_spread(garden, row, col + 1, item)
+
+    # return garden
+
+    flower_spreads = []
+    weed_spreads = []
+    
     for row in range(horizontal):
         for col in range(vertical):
-            if garden[row][col] == "F":
-                item = "F"
-                garden = spread_up(garden, row, col, item)
-                garden = spread_down(garden, row, col, item)
-                garden = spread_right(garden, row, col, item)
-                garden = spread_left(garden, row, col, item)
-            elif garden[row][col] == "W":
-                item = "W"
-                garden = spread_up(garden, row, col, item)
-                garden = spread_down(garden, row, col, item)
-                garden = spread_right(garden, row, col, item)
-                garden = spread_left(garden, row, col, item)
-
+            if garden[row][col] == FLOWER:
+                flower_spreads.append((row - 1, col))
+                flower_spreads.append((row + 1, col))
+                flower_spreads.append((row, col - 1))
+                flower_spreads.append((row, col + 1))
+            elif garden[row][col] == WEED:
+                weed_spreads.append((row - 1, col))
+                weed_spreads.append((row + 1, col))
+                weed_spreads.append((row, col - 1))
+                weed_spreads.append((row, col + 1))
+    
+    plant_spread(garden, flower_spreads, FLOWER)
+    plant_spread(garden, weed_spreads, WEED)
+    
     return garden
 
 
@@ -139,6 +135,17 @@ def grow_garden(garden, horizontal, vertical):
         print("----------")
         print()
         display_garden(garden, horizontal, vertical)
+
+def input_coordi(horizontal , vertical):
+    x = int(input('Enter the row number'))
+    y = int(input("Enter the column numbers"))
+    while x > horizontal or y > vertical :
+        print("either your row or column number is invalid")
+        x = int(input('Enter the row number'))
+        y = int(input("Enter the column numbers"))
+    
+    return x-1 , y-1
+
 
 
 def main():
@@ -161,31 +168,21 @@ def main():
         )
 
         if choice == 1:
-            x = int(input("Enter the x coordinate for where you want to plant: ")) - 1
-            y = int(input("Enter the y coordinate for where you want to plant: ")) - 1
-            if garden[x][y] != ".":
+
+            x, y = input_coordi(horizontal , vertical)
+        
+            if garden[x][y] != EMPTY_CELL:
                 print("Invalid, item already present in that area.")
             else:
-                garden[x][y] = "F"
+                garden[x][y] = FLOWER
             display_garden(garden, horizontal, vertical)
 
         elif choice == 2:
-            x = (
-                int(input("enter the x coordinate form where you want to remove weed "))
-                - 1
-            )
-            y = (
-                int(
-                    input(
-                        "Enter the ycoordinate form where you want ot remove weed :  "
-                    )
-                )
-                - 1
-            )
-            if garden[x][y] != "W":
+            x, y = input_coordi(horizontal , vertical)
+            if garden[x][y] != WEED:
                 print("Invalid, no weed in the area.")
             else:
-                garden[x][y] = "."
+                garden[x][y] = EMPTY_CELL
 
             display_garden(garden, horizontal, vertical)
 
@@ -205,4 +202,6 @@ def main():
             cont = False
 
 
-main()
+if __name__ == "__main__":
+    main()
+
