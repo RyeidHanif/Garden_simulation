@@ -41,6 +41,7 @@ def create_garden(row, col):
 
 
 def display_garden(garden, horizontal, vertical):
+    """Return a grid of n by m squares """
     for r in range(horizontal):
         for c in range(vertical):
             print(garden[r][c], end="")
@@ -51,6 +52,7 @@ def display_garden(garden, horizontal, vertical):
 
 
 def spread_up(garden, coordi_spread_x, coordi_spread_y, item):
+    """Return a version of the garden where each flower and weed moves 1 square up"""
     try:
         if garden[coordi_spread_x - 1][coordi_spread_y] == ".":
             garden[coordi_spread_x - 1][coordi_spread_y] = item
@@ -60,6 +62,7 @@ def spread_up(garden, coordi_spread_x, coordi_spread_y, item):
 
 
 def spread_right(garden, coordi_spread_x, coordi_spread_y, item):
+    """Return a version of the garden where each flower and weed moves 1 square right"""
     try:
         if garden[coordi_spread_x][coordi_spread_y + 1] == ".":
             garden[coordi_spread_x][coordi_spread_y + 1] = item
@@ -69,6 +72,7 @@ def spread_right(garden, coordi_spread_x, coordi_spread_y, item):
 
 
 def spread_left(garden, coordi_spread_x, coordi_spread_y, item):
+    """Return a version of the garden where each flower and weed moves 1 square left"""
     try:
         if garden[coordi_spread_x][coordi_spread_y - 1] == ".":
             garden[coordi_spread_x][coordi_spread_y - 1] = item
@@ -78,6 +82,7 @@ def spread_left(garden, coordi_spread_x, coordi_spread_y, item):
 
 
 def spread_down(garden, coordi_spread_x, coordi_spread_y, item):
+    """Return a version of the garden where each flower and weed moves 1 square down"""
     try:
         if garden[coordi_spread_x + 1][coordi_spread_y] == ".":
             garden[coordi_spread_x + 1][coordi_spread_y] = item
@@ -88,6 +93,7 @@ def spread_down(garden, coordi_spread_x, coordi_spread_y, item):
 
 # counts the total number of flowers and weeds
 def counting_items(garden, horizontal, vertical):
+    """Return the number of flowers and weeds in the garden"""
     flower_count = 0
     weed_count = 0
     for rows in range(horizontal):
@@ -103,6 +109,7 @@ def counting_items(garden, horizontal, vertical):
 
 
 def day_increment(garden, horizontal, vertical):
+    """Returns a version of the garden where a day has passed """
     for row in range(horizontal):
         for col in range(vertical):
             if garden[row][col] == "F":
