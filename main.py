@@ -41,7 +41,7 @@ def create_garden(row, col):
 
 
 def display_garden(garden, horizontal, vertical):
-    """Return a grid of n by m squares """
+    """Return a grid of n by m squares"""
     for r in range(horizontal):
         for c in range(vertical):
             print(garden[r][c], end="")
@@ -109,7 +109,7 @@ def counting_items(garden, horizontal, vertical):
 
 
 def day_increment(garden, horizontal, vertical):
-    """Returns a version of the garden where a day has passed """
+    """Returns a version of the garden where a day has passed"""
     for row in range(horizontal):
         for col in range(vertical):
             if garden[row][col] == "F":
@@ -126,6 +126,19 @@ def day_increment(garden, horizontal, vertical):
                 garden = spread_left(garden, row, col, item)
 
     return garden
+
+
+def grow_garden(garden, horizontal, vertical):
+    days = int(input("How many days do you want to simulate? "))
+
+    for _ in range(days):
+        garden = day_increment(
+            garden, horizontal, vertical
+        )  # Update garden with the latest state
+        print()
+        print("----------")
+        print()
+        display_garden(garden, horizontal, vertical)
 
 
 def main():
@@ -177,16 +190,7 @@ def main():
             display_garden(garden, horizontal, vertical)
 
         elif choice == 4:
-            days = int(input("How many days do you want to simulate? "))
-
-            for _ in range(days):
-                garden = day_increment(
-                    garden, horizontal, vertical
-                )  # Update garden with the latest state
-                print()
-                print("----------")
-                print()
-                display_garden(garden, horizontal, vertical)
+            grow_garden(garden, horizontal, vertical)
 
         elif choice == 3:
             flower_num, weed_num = counting_items(garden, horizontal, vertical)
