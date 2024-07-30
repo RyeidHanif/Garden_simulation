@@ -1,4 +1,5 @@
 import random
+import copy
 
 EMPTY_CELL = "."
 FLOWER = "F"
@@ -6,7 +7,7 @@ WEED = "W"
 
 
 def plant_random(garden, amount, item, row, col):
-    for i in range(amount):
+    for _ in range(amount):
         while True:
             coordi_flower_x = random.randint(0, row - 1)
             coordi_flower_y = random.randint(0, col - 1)
@@ -17,29 +18,29 @@ def plant_random(garden, amount, item, row, col):
 
 def create_garden(row, col):
     """Return a Grid for the Garden with n by m squares and 4 flowers and 3 weedss ."""
-    garden = []
+    if row < 0 or col < 0 or row != int(row) or col != int(col):
+        raise ValueError("cannot be less than 0 or must be an integer")
+    else:
+        garden = []
 
-    for r in range(row):
-        rows = []
-        for c in range(col):
-            cell_value = EMPTY_CELL
-            roulette = random.randint(1, 10)
-            if roulette == 1:
-                random_fifty = random.randint(1, 2)
-                if random_fifty == 1:
-                    cell_value = FLOWER
-                elif random_fifty == 2:
-                    cell_value = WEED
-            rows.append(cell_value)
-        garden.append(rows)
+        for r in range(row):
+            rows = []
+            for c in range(col):
+                cell_value = EMPTY_CELL
+                roulette = random.randint(1, 10)
+                if roulette == 1:
+                    random_fifty = random.randint(1, 2)
+                    if random_fifty == 1:
+                        cell_value = FLOWER
+                    elif random_fifty == 2:
+                        cell_value = WEED
+                rows.append(cell_value)
+            garden.append(rows)
 
-    plant_random(garden, 4, FLOWER, row, col)
-    plant_random(garden, 3, WEED, row, col)
+        plant_random(garden, 4, FLOWER, row, col)
+        plant_random(garden, 3, WEED, row, col)
 
-    return garden
-
-
-
+        return garden
 
 
 def display_garden(garden, horizontal, vertical):
@@ -48,7 +49,6 @@ def display_garden(garden, horizontal, vertical):
         for c in range(vertical):
             print(garden[r][c], end="")
         print("")
-
 
 
 def counting_items(garden, horizontal, vertical):
@@ -68,26 +68,39 @@ def counting_items(garden, horizontal, vertical):
 
 
 def plant(garden, coordi_spread_x, coordi_spread_y, item):
-    done = False
-    try:
+    # Check if coordinates are within the garden bounds
+    if not (
+        0 <= coordi_spread_x < len(garden) and 0 <= coordi_spread_y < len(garden[0])
+    ):
+        raise IndexError("Coordinates out of range")
+
+    if item == "F" or item == "W":
         if garden[coordi_spread_x][coordi_spread_y] == EMPTY_CELL:
             garden[coordi_spread_x][coordi_spread_y] = item
-            done = True
-    except IndexError:
-        pass
-    return done
+            return True
+        return False
+    else:
+        if item == ".":
+            pass
+        else:
+            raise ValueError("Invalid item type. Only 'F' and 'W' are allowed.")
 
 
 def day_increment(garden, horizontal, vertical):
     """Returns a version of the garden where a day has passed"""
+    new_garden = copy.deepcopy(garden)
 
     for row in range(horizontal):
         for col in range(vertical):
-            item = garden[row][col]
-            plant(garden, row - 1, col, item)
-            plant(garden, row + 1, col, item)
-            plant(garden, row, col - 1, item)
-            plant(garden, row, col + 1, item)
+            item = new_garden[row][col]
+            if 0 <= row - 1 < horizontal:
+                plant(garden, row - 1, col, item)
+            if 0 <= row + 1 < horizontal:
+                plant(garden, row + 1, col, item)
+            if 0 <= col - 1 < vertical:
+                plant(garden, row, col - 1, item)
+            if 0 <= col + 1 < vertical:
+                plant(garden, row, col + 1, item)
 
     return garden
 
